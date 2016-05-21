@@ -1,8 +1,11 @@
-import urllib2
 import json
+import random 
+import string
+import urllib2
 
 from bs4 import BeautifulSoup
-
+from pydub import AudioSegment
+from watson_developer_cloud import SpeechToTextV1, TextToSpeechV1
 
 prod_id = '003-05-0451'
 store_id = '1375'
@@ -123,7 +126,35 @@ print '\n'
 
 print "item #%s is located at aisle %s in block %s floor %s" % (prod_id, a['in_store_location'][0]['aisle'], a['in_store_location'][0]['block'], a['in_store_location'][0]['floor'])
 
+speech_to_text = SpeechToTextV1(
+    username='26664ba5-62a0-4e3b-b070-816fa4a67837',
+    password='kw44VBtY0T3P')
 
+print(json.dumps(speech_to_text.models(), indent=2))
 
+sound = AudioSegment.from_file('.wma')
+sound.export('test.wav', format='wav')
 
+with open('test.wav', 'rb') as audio_file:
+	result = speech_to_text.recognize(audio_file, content_type='audio/wav')
+	print(result)    
 
+	# TODO: Fix harcoding to access translated text 
+	text = result['results'][0]['alternatives'][0]['transcript'].strip()
+	print(text)
+
+ALPHABET = string.ascii_lowercase
+
+text_to_speech = TextToSpeechV1(
+    username='c4fb92e9-8a5b-4b6a-9c7b-338ca22b9aae',
+    password='QZ7UpoSxwb4j')
+
+print(json.dumps(text_to_speech.voices(), indent=2))
+
+def random_word(length):
+   return 'bullseye_output_' + \
+   		''.join(random.choice(string.ascii_lowercase) for i in range(length))
+
+with open('{0}.wav'.format(random_word(4)), 'wb') as audio_file:
+    audio_file.write(text_to_speech.synthesize(
+    	'Wuhf Bark. Lucky Charms is on Aisle 3', accept='audio/wav', voice='en-US_AllisonVoice'))
