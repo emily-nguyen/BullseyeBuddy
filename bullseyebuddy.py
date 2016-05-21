@@ -12,7 +12,7 @@ speech_to_text = SpeechToTextV1(
     username='26664ba5-62a0-4e3b-b070-816fa4a67837',
     password='kw44VBtY0T3P')
 
-search_strings = ['french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav', 'pink_shirt.wav']
+search_strings = ['french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav', 'pink_shirt.wav', 'asdfghjkl.wav']
 for sound_file in search_strings:
 
 	with open(sound_file, 'rb') as audio_file:
