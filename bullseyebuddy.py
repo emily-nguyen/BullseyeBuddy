@@ -132,7 +132,7 @@ speech_to_text = SpeechToTextV1(
 
 print(json.dumps(speech_to_text.models(), indent=2))
 
-sound = AudioSegment.from_file('.wma')
+sound = AudioSegment.from_file('test.wma')
 sound.export('test.wav', format='wav')
 
 with open('test.wav', 'rb') as audio_file:
