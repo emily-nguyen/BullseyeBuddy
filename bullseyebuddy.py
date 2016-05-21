@@ -12,7 +12,7 @@ speech_to_text = SpeechToTextV1(
     username='26664ba5-62a0-4e3b-b070-816fa4a67837',
     password='kw44VBtY0T3P')
 
-search_strings = ['french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav']
+search_strings = ['french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav', 'pink_shirt.wav']
 for sound_file in search_strings:
 
 	with open(sound_file, 'rb') as audio_file:
@@ -20,7 +20,6 @@ for sound_file in search_strings:
 
 		text = result['results'][0]['alternatives'][0]['transcript'].strip()
 	
-
 	text = '%20'.join(text.split())
 
 	url_var = "http://www.target.com/s?category=0|All|matchallpartial|all+categories&searchTerm=%s" % text
@@ -30,32 +29,34 @@ for sound_file in search_strings:
 	soup = BeautifulSoup(con, "html.parser")
 
 	first_link = soup.find('a', class_="productClick")
-	url_first = first_link.get('href')
-	index = url_first.index('/A-') + 3
-	prod_id = url_first[index : index +8]
+	if first_link:  # if first_link is not None, i.e. if target.com has SOME result for our query
+		url_first = first_link.get('href')
+		index = url_first.index('/A-') + 3
+		prod_id = url_first[index : index +8]
 
-	id_type = 'tcin'
-	store_id = '1375'
-	api_key = 'Id8SS1KAXuFd2W7R60XC5AUTTGKbnU2U'
+		id_type = 'tcin'
+		store_id = '1375'
+		api_key = 'Id8SS1KAXuFd2W7R60XC5AUTTGKbnU2U'
 
-	base_url = 'http://api.target.com/products/v3'
-	data = json.dumps({'key': api_key, 'product_id' : prod_id, 'store_id' : store_id, 'fields': 'in_store_locations', 'id_type' : id_type})
+		base_url = 'http://api.target.com/products/v3'
+		data = json.dumps({'key': api_key, 'product_id' : prod_id, 'store_id' : store_id, 'fields': 'in_store_locations', 'id_type' : id_type})
 
-	url_locations ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, store_id, 'in_store_locations', id_type)
+		url_locations ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, store_id, 'in_store_locations', id_type)
 
-	response_locations = urllib2.urlopen(url_locations)
-	data_locations = json.loads(response_locations.read())
-	array_locations= data_locations[u'product_composite_response'][u'items'][0]
+		response_locations = urllib2.urlopen(url_locations)
+		data_locations = json.loads(response_locations.read())
+		array_locations= data_locations[u'product_composite_response'][u'items'][0]
 
 
 
-	if 'in_store_location' in array_locations:
-		useful = array_locations["in_store_location"][0]
-		speech_location =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], useful['aisle'], useful['block'], useful['floor'])
+		if 'in_store_location' in array_locations:
+			useful = array_locations["in_store_location"][0]
+			speech_location =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], useful['aisle'], useful['block'], useful['floor'])
 
+		else:
+			speech_location= "Item %s is not found in this location. Please visit target.com." % (array_locations['general_description'])
 	else:
-		speech_location= "Item %s is not found in this location. Please visit target.com." % (array_locations['general_description'])
-
+		speech_location = "Sorry! We could not find an item with that name."
 
 	print speech_location
 
