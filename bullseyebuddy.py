@@ -46,7 +46,7 @@ base_url = 'http://api.target.com/products/v3'
 data = json.dumps({'key': api_key, 'product_id' : prod_id, 'store_id' : '1375', 'fields': 'in_store_locations', 'id_type' : 'tcin'})
 
 url_locations ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'in_store_locations', 'tcin')
-url_pricing ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'webclass_hierarchy', 'tcin')
+url_pricing ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'store_product_type_hierarchy', 'tcin')
 url_nutrients ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'nutrients', 'tcin')
 
 
@@ -70,6 +70,7 @@ print 'nutrition info'
 print array_nutrients
 
 speech_location =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], array_locations['in_store_location'][0]['aisle'], array_locations['in_store_location'][0]['block'], array_locations['in_store_location'][0]['floor'])
+speech_pricing =  "Ruff. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], array_locations['in_store_location'][0]['aisle'], array_locations['in_store_location'][0]['block'], array_locations['in_store_location'][0]['floor'])
 
 print speech_location
 
