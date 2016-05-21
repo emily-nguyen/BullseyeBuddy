@@ -20,8 +20,7 @@ with open('french_toast_cinnamon.wav', 'rb') as audio_file:
 
 	# TODO: Fix harcoding to access translated text 
 	text = result['results'][0]['alternatives'][0]['transcript'].strip()
-
-	print(text)
+	#print(text)
 
 text = '%20'.join(text.split())
 
@@ -35,41 +34,48 @@ first_link = soup.find('a', class_="productClick")
 url_first = first_link.get('href')
 index = url_first.index('/A-') + 3
 prod_id = url_first[index : index +8]
-print url_first
-print prod_id
-prod_id = '12992579'
-
+# print url_first
+# print prod_id
+id_type = 'tcin'
 store_id = '1375'
 api_key = 'Id8SS1KAXuFd2W7R60XC5AUTTGKbnU2U'
 
 base_url = 'http://api.target.com/products/v3'
-data = json.dumps({'key': api_key, 'product_id' : prod_id, 'store_id' : '1375', 'fields': 'in_store_locations', 'id_type' : 'tcin'})
+data = json.dumps({'key': api_key, 'product_id' : prod_id, 'store_id' : store_id, 'fields': 'in_store_locations', 'id_type' : id_type})
 
-url_locations ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'in_store_locations', 'tcin')
-url_pricing ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'webclass_hierarchy', 'tcin')
-url_nutrients ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, '1375', 'nutrients', 'tcin')
+url_locations ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, store_id, 'in_store_locations', id_type)
+# url_pricing ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, store_id, 'webclass_hierarchy', id_type)
+# url_nutrients ='http://api.target.com/products/v3?key=%s&product_id=%s&store_id=%s&fields=%s&id_type=%s' % (api_key, prod_id, store_id, 'nutrients', id_type)
 
 
 response_locations = urllib2.urlopen(url_locations)
 data_locations = json.loads(response_locations.read())
 array_locations= data_locations[u'product_composite_response'][u'items'][0]
 
-response_pricing = urllib2.urlopen(url_pricing)
-data_pricing = json.loads(response_pricing.read())
-array_pricing= data_pricing[u'product_composite_response'][u'items'][0]
+# response_pricing = urllib2.urlopen(url_pricing)
+# data_pricing = json.loads(response_pricing.read())
+# array_pricing= data_pricing[u'product_composite_response'][u'items'][0]
 
-response_nutrients = urllib2.urlopen(url_nutrients)
-data_nutrients = json.loads(response_nutrients.read())
-array_nutrients= data_nutrients[u'product_composite_response'][u'items'][0]
+# response_nutrients = urllib2.urlopen(url_nutrients)
+# data_nutrients = json.loads(response_nutrients.read())
+# array_nutrients= data_nutrients[u'product_composite_response'][u'items'][0]
 
-print 'location info'
-print array_locations
-print 'pricing info'
-print array_pricing
-print 'nutrition info'
-print array_nutrients
+# print 'location info'
+# print array_locations
+# print 'pricing info'
+# print array_pricing
+# print 'nutrition info'
+# print array_nutrients
 
-speech_location =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], array_locations['in_store_location'][0]['aisle'], array_locations['in_store_location'][0]['block'], array_locations['in_store_location'][0]['floor'])
+
+
+if 'in_store_location' in array_locations:
+	useful = array_locations["in_store_location"][0]
+	speech_location =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s" % (array_locations['general_description'], useful['aisle'], useful['block'], useful['floor'])
+
+else:
+	speech_location= "Item %s is not found in this location. Please visit target.com." % (array_locations['general_description'])
+
 
 print speech_location
 
