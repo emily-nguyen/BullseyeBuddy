@@ -24,7 +24,7 @@ def random_word(length):
 
   
 
-search_strings = ['cartwheel.wav', 'french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav', 'pink_shirt.wav']
+search_strings = ['cartwheel.wav', 'french_toast_cinnamon.wav', 'cheese_pizza.wav', 'toothbrush.wav', 'pink_shirt.wav', 'asdfghjkl.wav']
 for sound_file in search_strings:
   with open(sound_file, 'rb') as audio_file:
     result = speech_to_text.recognize(audio_file, content_type='audio/wav')
@@ -55,12 +55,13 @@ for sound_file in search_strings:
       index1 = str(all_offers[1]).index('</h3>')
       index2 = str(all_offers[1]).index('>') + 1
       second_offer = str(all_offers[1])[index2 : index1]
-      second_offer = second_offer.replace('&amp;', '&')
+      second_offer = second_offer.replace("&amp;", ", and, ")
+      print second_offer
       index1 = str(all_offers[2]).index('</h3>')
       index2 = str(all_offers[2]).index('>') + 1
       third_offer = str(all_offers[2])[index2 : index1]
       
-      speech= "Today's trending Cartwheel deals are on %s, %s, and %s." % (first_offer, second_offer, third_offer)
+      speech= "Arf. Today's trending Cartwheel deals are on %s, %s, and %s. Bark" % (first_offer, second_offer, third_offer)
 
       pass
     else:
@@ -99,10 +100,13 @@ for sound_file in search_strings:
             useful_locations = array_locations["in_store_location"][0]
             speech =  "Wuhf Bark. Item %s is located at aisle %s in block %s floor %s. Target does not currently have any discounts on this item." % (array_locations['general_description'], useful_locations['aisle'], useful_locations['block'], useful_locations['floor'])
         else:
-          speech= "Item %s is not found in this location. Please visit target.com." % (array_locations['general_description'])
+          speech= "Bark! Item %s is not found in this location. Please visit target.com." % (array_locations['general_description'])
           pass
+      else:
+        speech = "Rufff! Sorry! We could not find an item with that name."
   print speech
   random_word(4);
   with open('{0}.wav'.format(random_word(4)), 'wb') as audio_file:
     audio_file.write(text_to_speech.synthesize(
     speech, accept='audio/wav', voice='en-US_AllisonVoice'))
+  raw_input()
